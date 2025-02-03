@@ -1,3 +1,40 @@
 <resources>
-    <string name="app_name">To Do App</string>
+    <string name="app_name">To Do</string>
+    <string name="to_do_list" translatable="false">To Do List</string>
+    <string name="tasks" translatable="false">Tasks</string>
+    <string name="settings" translatable="false">Settings</string>
+    <string name="enter_your_task" translatable="false">enter your task</string>
+    <string name="enter_task_description" translatable="false">enter task description</string>
+    <string name="select_date" translatable="false">Select Date</string>
+    <string name="select_time" translatable="false">Select time</string>
+    <string name="title" translatable="false">Title</string>
+    <string name="description" translatable="false">Description</string>
+    <string name="add_new_task" translatable="false">Add New Task</string>
+    <string name="add_task_title" translatable="false">"please enter a title"</string>
+    <string name="add_task_date" translatable="false">"please select a date "</string>
+    <string name="add_task_time" translatable="false">"please select a time "</string>
+    <string name="edit_task" translatable="false">Edit Task</string>
+    <string name="save" translatable="false">Save</string>
+    <string name="language" translatable="false">Language</string>
+    <string name="mode" translatable="false">Mode</string>
+    <string name="light" translatable="false">Light</string>
+    <string name="dark" translatable="false">Dark</string>
+    <string name="english" translatable="false">English</string>
+    <string name="title_required" translatable="false">Title Required</string>
+    <string name="required_field" translatable="false">Required Field</string>
+    <string name="edit_task_tv" translatable="false">Edit Task</string>
+    <string name="save_changes" translatable="false">Save Changes</string>
+    <string name="task_title" translatable="false">Task Title</string>
+    <string name="task_description">Task description</string>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Arabic</item>
+    </string-array>
+
+    <string-array name="modes">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
 </resources>

@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_EXPRESSION")
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -36,13 +34,19 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures{
+        viewBinding = true
+    }
 }
 
-dependencies {
-    "2.6.1"
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
 
+dependencies {
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    implementation (libs.material.calendarview)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
