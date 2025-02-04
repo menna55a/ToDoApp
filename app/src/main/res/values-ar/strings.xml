@@ -18,8 +18,9 @@
     <string name="save">حفظ</string>
     <string name="language">اللغة</string>
     <string name="mode">وضع الشاشة</string>
-    <string name="light">Light</string>
-    <string name="dark">Dark</string>
-    <string name="english">English</string>
+    <string name="english">الانجليزية</string>
+    <string name="edit_task_tv">تعديل المهام</string>
+    <string name="save_changes">حفظ التعديل</string>
+
 
 </resources>

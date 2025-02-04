@@ -18,7 +18,6 @@ import com.route.todoapp.ui.util.showDatePickerDialog
 import com.route.todoapp.ui.util.showTimePickerDialog
 import java.util.Calendar
 
-
 class AddTaskFragment: BottomSheetDialogFragment() {
     lateinit var binding: FragmentAddTaskBinding
     lateinit var dao: TasksDao

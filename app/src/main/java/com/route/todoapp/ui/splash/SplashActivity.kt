@@ -20,10 +20,20 @@ class SplashActivity : AppCompatActivity() {
         Handler(mainLooper).postDelayed({
             navigateToHomeActivity()
         },2000)
+        settingsMode()
     }
     private fun navigateToHomeActivity() {
         val intent = Intent(this,HomeActivity::class.java)
         startActivity(intent)
         finish()
+    }
+    private fun settingsMode(){
+        val sharedPreferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val savedMode = sharedPreferences.getString("App_Mode", "Light")
+
+        when (savedMode) {
+            "Dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            "Light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
     }
 }
