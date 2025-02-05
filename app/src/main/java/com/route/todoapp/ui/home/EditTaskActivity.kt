@@ -1,73 +1,130 @@
 package com.route.todoapp.ui.home
 
 import android.os.Bundle
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.IntentCompat
 import com.route.todoapp.databinding.ActivityEditTaskBinding
 import com.route.todoapp.database.MyDatabase
 import com.route.todoapp.database.dao.TasksDao
 import com.route.todoapp.database.entity.Task
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.route.todoapp.ui.util.Constants
+import com.route.todoapp.ui.util.clearDate
+import com.route.todoapp.ui.util.clearSeconds
+import com.route.todoapp.ui.util.clearTime
+import com.route.todoapp.ui.util.getFormattedTime
+import com.route.todoapp.ui.util.showDatePickerDialog
+import com.route.todoapp.ui.util.showTimePickerDialog
+import java.util.Calendar
 
 class EditTaskActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditTaskBinding
+    private lateinit var intentTask: Task
+    private lateinit var editTask: Task
     private lateinit var dao: TasksDao
-    private var taskId: Int = -1
+    private var dateCalendar = Calendar.getInstance()
+    private var timeCalendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        intentTask = IntentCompat.getParcelableExtra(intent,Constants.TASK_KEY,Task::class.java) as Task
+        editTask = intentTask.copy()
         dao = MyDatabase.getInstance().tasksDao()
+        setupToolBar()
+        initViews()
+        onSelectDateClick()
+        onSelectTimeClick()
+        onSaveDada()
 
-        taskId = intent.getIntExtra("TASK_ID", -1) // Get task ID from intent
-        if (taskId == -1) {
-            Toast.makeText(this, "Invalid task", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+    }
 
-        loadTaskDetails()
-
+    private fun onSaveDada() {
         binding.btnSaveTask.setOnClickListener {
+            if (!validateInput()) {
+                return@setOnClickListener
+            }
             updateTask()
         }
     }
-
-    private fun loadTaskDetails() {
-        val task = dao.getTaskById(taskId)
-        if (task != null) {
-            binding.tvEditTaskTitle.setText(task.title)
-            binding.etTaskDetails.setText(task.description)
-            binding.tvTaskTime.text = getFormattedDate(task.time)
-        } else {
-            Toast.makeText(this, "Task not found!", Toast.LENGTH_SHORT).show()
-            finish()
-        }
-    }
     private fun updateTask() {
-        val title = binding.tvEditTaskTitle.text.toString()
-        val details = binding.etTaskDetails.text.toString()
-        val time = System.currentTimeMillis()
-
-        if (title.isEmpty()) {
-            Toast.makeText(this, "Title cannot be empty!", Toast.LENGTH_SHORT).show()
-            return
+        editTask.apply {
+            title = binding.title.text.toString()
+            description = binding.description.text.toString()
         }
-
-        val updatedTask = Task(taskId, title, details, time, time, false)
-        dao.updateTask(updatedTask)
-
-        Toast.makeText(this, "Task updated!", Toast.LENGTH_SHORT).show()
+        dao.updateTask(editTask)
         finish()
+
     }
 
-    private fun getFormattedDate(time: Long): String {
-        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-        return sdf.format(Date(time))
+    fun validateInput():Boolean{
+        var isValid = true
+        if(binding.title.text.isNullOrBlank()){
+            isValid = false
+            binding.titleTil.error ="Required Field"
+        }else{
+            binding.titleTil.error = null
+        }
+        return isValid
+    }
+
+    private fun onSelectTimeClick() {
+        binding.selectTimeTv.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            showTimePickerDialog(calendar.get(Calendar.HOUR),calendar.get(Calendar.MINUTE),"Select Time:",supportFragmentManager){ hour, minute->
+                binding.selectTimeTv.text = getFormattedTime(hour,minute)
+                timeCalendar.set(Calendar.HOUR,hour)
+                timeCalendar.set(Calendar.MINUTE,minute)
+                timeCalendar.clearDate()
+                timeCalendar.clearSeconds()
+                editTask.time = timeCalendar.timeInMillis
+
+            }
+        }
+    }
+
+    private fun onSelectDateClick() {
+      binding.selectDateTv.setOnClickListener{
+          showDatePickerDialog(this){ date, calender ->
+              binding.selectDateTv.text = date
+              dateCalendar.set(Calendar.YEAR, calender.get(Calendar.YEAR))
+              dateCalendar.set(Calendar.MONTH, calender.get(Calendar.MONTH))
+              dateCalendar.set(Calendar.DAY_OF_MONTH, calender.get(Calendar.DAY_OF_MONTH))
+              dateCalendar.clearTime()
+              editTask.time =timeCalendar.timeInMillis
+          }
+      }
+
+    }
+    private fun initViews() {
+        binding.title.setText(intentTask.title)
+        binding.description.setText(intentTask.description)
+
+        val calender = Calendar.getInstance()
+        calender.timeInMillis = intentTask.time
+        val year = calender.get(Calendar.YEAR)
+        val month = calender.get(Calendar.MONTH)
+        val day = calender.get(Calendar.DAY_OF_MONTH)
+        binding.selectDateTv.text = "$day/${month-1}/$year"
+
+        calender.timeInMillis = intentTask.date
+        val hour = calender.get(Calendar.HOUR)
+        val minutes = calender.get(Calendar.MINUTE)
+        binding.selectTimeTv.text = getFormattedTime(hour , minutes)
+
+    }
+
+    private fun setupToolBar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setHomeButtonEnabled(true)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
+
     }
 }
 

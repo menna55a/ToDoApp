@@ -12,10 +12,12 @@ import com.route.todoapp.ui.home.fragments.tasks_fragment.TasksFragment
 
 class HomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeBinding
+    var tasksFragment:TasksFragment?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        tasksFragment = supportFragmentManager.findFragmentByTag("TASKS_FRAGMENT") as? TasksFragment ?: TasksFragment()
         setNavigation()
         setOnFabClick()
     }
@@ -24,6 +26,7 @@ class HomeActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem->
             if (menuItem.itemId == R.id.tasks){
                 showFragment(TasksFragment())
+                //showFragment(tasksFragment!!,"TASKS_FRAGMENT")
                 binding.title.text = getString(R.string.to_do_list)
             }else if (menuItem.itemId ==R.id.settings){
                 showFragment(SettingsFragment())
@@ -34,7 +37,7 @@ class HomeActivity : AppCompatActivity() {
         binding.bottomNavigationView.selectedItemId = R.id.tasks
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showFragment(fragment: Fragment,) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container,fragment)
             .setCustomAnimations(R.anim.fade_in,R.anim.fade_out)
@@ -48,6 +51,7 @@ class HomeActivity : AppCompatActivity() {
             bottomSheet.show(supportFragmentManager,"")
             bottomSheet.onTaskAdded = AddTaskFragment.OnTaskAdded { task: Task ->
                 //reload data in recyclerview in TasksFragment
+
             }
         }
 
